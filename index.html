@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Blink Battle</title>
+  <meta name="description" content="Staring contest against an AI. Blink and you lose.">
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- MediaPipe Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <!-- ═══════════ HERO / PRE-GAME ═══════════ -->
+  <div id="screen-hero" class="screen active">
+    <div class="hero-content">
+      <h1 class="title">BLINK BATTLE 👁️</h1>
+      <p class="subtitle">Stare into the void. Don't blink.</p>
+      
+      <div class="hero-ai-preview">
+        <svg viewBox="0 0 200 200" class="ai-face-svg">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="var(--c-red)" stroke-width="4"/>
+          <!-- Eyes -->
+          <ellipse cx="65" cy="85" rx="15" ry="15" fill="var(--c-red)"/>
+          <ellipse cx="135" cy="85" rx="15" ry="15" fill="var(--c-red)"/>
+          <!-- Mouth Neutral -->
+          <path d="M 60 140 Q 100 150 140 140" fill="none" stroke="var(--c-red)" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <button id="btnStart" class="btn btn-primary" onclick="initGame()">ENABLE CAMERA & BATTLE</button>
+      
+      <p class="warning-text">Eye strain warning: This is just a game. Please blink naturally between rounds to protect your eyes.</p>
+    </div>
+  </div>
+
+  <!-- ═══════════ LOADING ═══════════ -->
+  <div id="screen-loading" class="screen loading-screen">
+    <div class="loading-text">Calibrating tracking...</div>
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ═══════════ BATTLE ARENA ═══════════ -->
+  <div id="screen-battle" class="screen arena">
+    
+    <!-- Health Bars & Timer -->
+    <div class="hud">
+      <div class="health-bar-container left">
+        <div class="bar-label">YOU</div>
+        <div class="bar-bg"><div class="bar-fill green" id="healthYou"></div></div>
+      </div>
+      
+      <div class="timer-container">
+        <div class="timer" id="gameTimer">00:00</div>
+        <div class="best-streak" id="bestStreak">PB: 0s</div>
+      </div>
+      
+      <div class="health-bar-container right">
+        <div class="bar-label">A.I.</div>
+        <div class="bar-bg"><div class="bar-fill red" id="healthAi"></div></div>
+      </div>
+    </div>
+
+    <!-- AI Opponent Face -->
+    <div class="ai-opponent-container">
+      <div class="focus-ring" id="focusRing"></div>
+      <svg viewBox="0 0 200 200" class="ai-face-svg main-ai" id="aiFace">
+        <circle cx="100" cy="100" r="90" fill="none" stroke="currentColor" stroke-width="4"/>
+        <g id="aiEyes">
+          <ellipse cx="65" cy="85" rx="15" ry="15" fill="currentColor"/>
+          <ellipse cx="135" cy="85" rx="15" ry="15" fill="currentColor"/>
+        </g>
+        <path id="aiMouth" d="M 60 140 Q 100 150 140 140" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Camera Preview -->
+    <div class="camera-preview">
+      <video id="webcamVideo" autoplay playsinline></video>
+      <div class="camera-overlay"></div>
+    </div>
+    
+  </div>
+
+  <!-- ═══════════ RESULTS SCREEN ═══════════ -->
+  <div id="screen-result" class="screen result-screen">
+    <h1 id="resultTitle" class="result-title">YOU BLINKED! 😈</h1>
+    <div class="score-display">
+      <div class="score-label">SURVIVAL TIME</div>
+      <div class="score-value" id="finalTime">12.4s</div>
+    </div>
+    
+    <p class="global-rank" id="globalRank">You lasted longer than 42% of players.</p>
+    
+    <div class="leaderboard">
+      <h3>TOP 5 STARE MASTERS</h3>
+      <ul id="leaderboardList">
+        <!-- JS rendered -->
+      </ul>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="rematch()">REMATCH 👁️</button>
+      <button class="btn btn-secondary" onclick="shareResult()">Share Score</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
